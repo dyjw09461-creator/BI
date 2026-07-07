@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<main class="form-page">
+  <form method="post" class="mall-form">
+    <h1>积金币</h1>
+    <label>会员账户ID<input name="account_id" value="{{ session.account_id or '' }}" required></label>
+    <label>请输入兑换码<input name="code" required></label>
+    <button>获取积分</button>
+    {% if result %}<pre>{{ result }}</pre>{% endif %}
+  </form>
+</main>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<main class="profile">
+  <section class="profile-card">
+    <h1>个人信息</h1>
+    <p>会员：{{ member.LoginName }} / {{ member.RealName }}</p>
+    <p>账户ID：{{ member.AccountID }}，可用金币：<strong>{{ member.ValidCoin }}</strong></p>
+    <a href="{{ url_for('profile_edit') }}">修改个人信息</a>
+  </section>
+  <section class="profile-grid">
+    <article><h2>订单</h2><table>{% for row in orders %}<tr><td>{{ row.OrderID }}</td><td>{{ row.OrderTime }}</td><td>{{ row.TotalCoin }}</td></tr>{% endfor %}</table></article>
+    <article><h2>积分明细</h2><table>{% for row in trades %}<tr><td>{{ row.TradeLogID }}</td><td>{{ row.TradeType }}</td><td>{{ row.Coin }}</td></tr>{% endfor %}</table></article>
+  </section>
+</main>
+{% endblock %}

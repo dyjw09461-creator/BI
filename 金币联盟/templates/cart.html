@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<main class="form-page wide">
+  <form method="post" class="mall-form">
+    <h1>{{ "礼品中心" if gift_center else "购物车" }}</h1>
+    {% if gift_center %}
+    <p class="form-note">浏览当前可兑换礼品。需要结算时进入购物车并填写会员与账户信息。</p>
+    {% else %}
+    <label>会员ID<input name="customer_id" value="{{ session.customer_id or '' }}" required></label>
+    <label>账户ID<input name="account_id" value="{{ session.account_id or '' }}" required></label>
+    {% endif %}
+    <label>礼品
+      <select name="gift_id" {% if gift_center %}disabled{% endif %}>
+        {% for gift in gifts %}<option value="{{ gift.GiftID }}">{{ gift.GiftName }} - {{ gift.GfitCoin }}金币 - 库存{{ gift.GiftNum }}</option>{% endfor %}
+      </select>
+    </label>
+    {% if not gift_center %}
+    <label>数量<input name="qty" value="1" required></label>
+    <button>结算兑换</button>
+    {% if result %}<pre>{{ result }}</pre>{% endif %}
+    {% else %}
+    <a class="button-link" href="{{ url_for('cart') }}">去购物车兑换</a>
+    {% endif %}
+  </form>
+</main>
+{% endblock %}

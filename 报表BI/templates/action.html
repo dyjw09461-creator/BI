@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<header class="page-head"><div><p class="eyebrow">业务操作</p><h1>{{ title }}</h1></div></header>
+<form class="panel form-grid" method="post">
+  {% for name, label in fields %}
+  <label>{{ label }}<input name="{{ name }}" required></label>
+  {% endfor %}
+  <button class="button primary">提交</button>
+</form>
+{% if result %}
+<section class="panel">
+  <h2>执行结果</h2>
+  <pre>{{ result }}</pre>
+</section>
+{% endif %}
+{% endblock %}

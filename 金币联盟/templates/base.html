@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title or "金币联盟" }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/mall.css') }}?v=20260706-premium">
+</head>
+<body>
+  <header class="site-header">
+    <div class="utility">
+      <div class="utility-inner">
+        <span>JBI Gold Coin Union</span>
+        <span>积分兑换 · 会员专享 · 精选好礼</span>
+        <span>粤ICP备06000716号</span>
+      </div>
+    </div>
+    <div class="nav-shell">
+      <a class="logo" href="{{ url_for('index') }}">
+        <img src="{{ url_for('static', filename='assets/JBI.jpg') }}" alt="JBI">
+        <span>金币联盟<small>Gold Coin Union</small></span>
+      </a>
+      <nav class="main-nav">
+        <a href="{{ url_for('index') }}">联盟首页</a>
+        <a href="{{ url_for('gift_center') }}">礼品中心</a>
+        <a href="{{ url_for('cart') }}">我的购物车</a>
+        <a href="{{ url_for('profile') }}">个人中心</a>
+      </nav>
+      <div class="account-links">
+        <a href="{{ url_for('register') }}">免费注册</a>
+        {% if session.login_name %}
+        <a href="{{ url_for('profile') }}">{{ session.login_name }}</a>
+        <a href="{{ url_for('logout') }}">退出</a>
+        {% else %}
+        <a href="{{ url_for('login') }}">登录</a>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+  <footer>金币联盟 | 联系我们 | 意见反馈 | 网站导航 | 帮助中心<br>© 2016-2018 粤ICP备06000716号</footer>
+</body>
+</html>

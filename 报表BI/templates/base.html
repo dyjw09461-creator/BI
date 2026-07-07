@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title or "积分平台业务系统" }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}?v=20260706-unified">
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark">BI</span>
+      <span>积分平台<br><small>Operations Console</small></span>
+    </div>
+    <nav>
+      <a href="{{ url_for('index') }}">仪表盘</a>
+      <a href="{{ url_for('customers') }}">会员</a>
+      <a href="{{ url_for('businesses') }}">商家</a>
+      <a href="{{ url_for('products') }}">商品</a>
+      <a href="{{ url_for('gifts') }}">礼品</a>
+      <a href="{{ url_for('codes') }}">积分码</a>
+      <a href="{{ url_for('earn') }}">积金币</a>
+      <a href="{{ url_for('exchange') }}">礼品兑换</a>
+      <a href="{{ url_for('orders') }}">订单</a>
+      <a href="{{ url_for('trades') }}">流水</a>
+      <a href="{{ url_for('seed') }}">大数据生成</a>
+    </nav>
+  </aside>
+  <main class="main">
+    <div class="top-shell">
+      <span>SQL Server / BIDemo_AccumulateCoin</span>
+      <span>商务智能实训核心业务台</span>
+    </div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

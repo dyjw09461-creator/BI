@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+<main class="home">
+<section class="hero">
+  <div class="hero-copy">
+    <p class="overline">JBI GOLD COIN UNION</p>
+    <h1>把积分变成<br>值得期待的礼物</h1>
+    <p class="subtitle">保留原金币联盟识别，重新整理为更克制、更有质感的会员兑换商城。</p>
+    <div class="hero-actions">
+      <a class="primary" href="{{ url_for('earn_coin') }}">立即积金币</a>
+      <a href="{{ url_for('gift_center') }}">兑换好礼</a>
+    </div>
+  </div>
+  <div class="hero-media">
+    <img src="{{ url_for('static', filename='assets/ZS.png') }}" alt="金币联盟横幅">
+    <div class="media-badge"><strong>JBI</strong><span>Member Rewards</span></div>
+  </div>
+</section>
+<section class="quick">
+  <a href="{{ url_for('earn_coin') }}">积金币</a>
+  <a href="{{ url_for('gift_center') }}">兑好礼</a>
+  <a href="#">享活动</a>
+</section>
+<nav class="tabs">
+  <a href="{{ url_for('index') }}">首页</a>
+  <a href="{{ url_for('gift_center') }}">礼品中心</a>
+  <a href="{{ url_for('cart') }}">购物车</a>
+  <a href="{{ url_for('profile') }}">个人中心</a>
+</nav>
+<main class="coin-zone">
+  <div class="section-title"><span>Selected Rewards</span><h2>金币好礼精选</h2><p>按原九宫格商品重排，弱化廉价大色块，突出商品本身。</p></div>
+  <section class="product-grid">
+    {% for image, price, name in products %}
+    <article class="product-card">
+      <img src="{{ url_for('static', filename='assets/' ~ image) }}" alt="{{ name }}">
+      <div class="buy-row"><strong>{{ price }}</strong><button>❤</button><a href="{{ url_for('cart') }}">加入购物车</a></div>
+      <p>{{ name }}</p>
+    </article>
+    {% endfor %}
+  </section>
+</main>
+<section class="channels">
+  {% for title, subtitle, imgs in channels %}
+  <article>
+    <h3>{{ title }}</h3>
+    <p>{{ subtitle }}</p>
+    {% for img in imgs %}<img src="{{ url_for('static', filename='assets/' ~ img) }}" alt="{{ title }}">{% endfor %}
+  </article>
+  {% endfor %}
+</section>
+</main>
+{% endblock %}

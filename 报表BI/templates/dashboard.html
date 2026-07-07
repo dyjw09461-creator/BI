@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>积分兑换平台 BI 仪表盘</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bi_dashboard.css') }}?v=20260706-integrated">
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+</head>
+<body>
+  <div class="scene-bg"></div>
+  <main class="bi-screen">
+    <header class="bi-header">
+      <section class="source">
+        <div class="source-mark">DW</div>
+        <div>
+          <strong>BIDemo_AccumulateCoin → BI_GoldCoin_DW</strong>
+          <span>全量/增量 ETL · Dashboard Views · 更新时间 <b id="now">--</b></span>
+        </div>
+      </section>
+      <section class="title">
+        <h1>积分兑换平台 BI 仪表盘</h1>
+        <p>商家会员 · 礼品兑换 · 订单统计 · 积分码 · 积分流水 · 地域分析</p>
+      </section>
+      <nav class="quick-nav">
+        <a href="{{ url_for('customers') }}">会员</a>
+        <a href="{{ url_for('businesses') }}">商家</a>
+        <a href="{{ url_for('products') }}">商品</a>
+        <a href="{{ url_for('gifts') }}">礼品</a>
+        <a href="{{ url_for('codes') }}">积分码</a>
+        <a href="{{ url_for('orders') }}">订单</a>
+      </nav>
+    </header>
+
+    <section class="kpi-row" id="kpis"></section>
+
+    <section class="panel trend-panel">
+      <div class="panel-head">
+        <h2>订单与兑换积分趋势</h2>
+        <span id="trendRange">按业务日期</span>
+      </div>
+      <div id="orderTrend" class="chart"></div>
+    </section>
+
+    <section class="panel matrix-panel">
+      <div class="panel-head">
+        <h2>总线矩阵主题覆盖</h2>
+        <span>主题扩展加分项</span>
+      </div>
+      <div class="matrix-grid">
+        <article><b>商家会员</b><span>商家 × 会员 × 时间</span></article>
+        <article><b>礼品兑换</b><span>礼品 × 订单 × 积分</span></article>
+        <article><b>订单统计</b><span>状态 × 时间 × 地域</span></article>
+        <article><b>商品积分</b><span>商品 × 商家 × 积分码</span></article>
+        <article><b>积分流水</b><span>收入 × 支出 × 账户</span></article>
+        <article><b>地域分析</b><span>会员 × 订单 × 区域</span></article>
+      </div>
+    </section>
+
+    <section class="panel status-panel">
+      <div class="panel-head">
+        <h2>积分码状态</h2>
+        <span>待使用 / 已使用 / 无效</span>
+      </div>
+      <div id="jfStatus" class="chart"></div>
+    </section>
+
+    <section class="panel product-panel">
+      <div class="panel-head">
+        <h2>商品积分贡献结构</h2>
+        <span>矩形树图 · 已使用积分码贡献</span>
+      </div>
+      <div id="productTreemap" class="chart"></div>
+    </section>
+
+    <section class="panel business-panel">
+      <div class="panel-head">
+        <h2>商家会员贡献极坐标</h2>
+        <span>会员规模对比</span>
+      </div>
+      <div id="businessPolar" class="chart"></div>
+    </section>
+
+    <section class="panel gift-panel">
+      <div class="panel-head">
+        <h2>礼品兑换组合分析</h2>
+        <span>簇状柱形图 + 客单积分折线</span>
+      </div>
+      <div id="giftBubble" class="chart"></div>
+    </section>
+
+    <section class="panel area-panel">
+      <div class="panel-head">
+        <h2>地域会员与订单分布</h2>
+        <span>省级热力地图 · 区县数据归并</span>
+      </div>
+      <div class="map-layout">
+        <div id="areaMap" class="chart"></div>
+        <div class="province-rank" id="provinceRank"></div>
+      </div>
+    </section>
+
+    <section class="panel alert-panel">
+      <div class="panel-head">
+        <h2>业务观察</h2>
+        <span>基于当前 DW 结果生成</span>
+      </div>
+      <div id="alerts" class="alerts"></div>
+    </section>
+  </main>
+  <script src="{{ url_for('static', filename='js/bi_dashboard.js') }}?v=20260706-integrated"></script>
+</body>
+</html>

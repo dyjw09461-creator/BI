@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<header class="page-head">
+  <div>
+    <p class="eyebrow">积分平台业务数据</p>
+    <h1>{{ title }}</h1>
+  </div>
+  <form class="search" method="get">
+    <input name="q" value="{{ q }}" placeholder="搜索关键字">
+    <button>查询</button>
+  </form>
+</header>
+{% if form_fields %}
+<form class="panel form-grid" method="post">
+  <div class="form-title">
+    <strong>新增{{ title | replace('管理','') }}</strong>
+    <span>用于补充业务库数据并支撑 BI 分析</span>
+  </div>
+  {% for name, label in form_fields %}
+  <label>{{ label }}<input name="{{ name }}" required></label>
+  {% endfor %}
+  <button class="button primary">新增</button>
+</form>
+{% endif %}
+<section class="panel">
+  <div class="table-wrap">
+    <table>
+      <thead><tr>{% for col in columns %}<th>{{ col }}</th>{% endfor %}</tr></thead>
+      <tbody>
+      {% for row in rows %}
+        <tr>{% for col in columns %}<td>{{ row[col] }}</td>{% endfor %}</tr>
+      {% else %}
+        <tr><td colspan="{{ columns|length }}">暂无数据</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<header class="page-head"><div><p class="eyebrow">数据准备</p><h1>大数据生成</h1></div></header>
+<section class="panel">
+  <p>执行以下 SQL 文件补齐 BI 所需数据量，不会重置现有业务库：</p>
+  <code>sqlcmd -S . -E -C -d BIDemo_AccumulateCoin -i sql\02_seed_large_business_data.sql</code>
+  <p>建议先执行支持过程脚本：</p>
+  <code>sqlcmd -S . -E -C -d BIDemo_AccumulateCoin -i sql\01_business_support_procs.sql</code>
+</section>
+{% endblock %}
