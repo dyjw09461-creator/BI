@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+<main class="commerce-page points-page">
+  <section class="commerce-hero points-hero">
+    <div>
+      <p class="overline">Points Mall</p>
+      <h1>积分商城</h1>
+      <p>礼品来自数据库 GiftInfo，加入兑换车后到购物车统一确认兑换。</p>
+      <div class="hero-actions compact-actions">
+        <a class="primary" href="#points-products">浏览礼品</a>
+        <a href="{{ url_for('cart') }}">查看兑换车</a>
+      </div>
+    </div>
+    <div class="shop-status-card points-status-card">
+      <span>兑换账户</span>
+      <strong>{{ session.login_name }}</strong>
+      <p>兑换车 {{ wallet.points_cart_count }} 件 · 合计 {{ wallet.points_cart_coin }} 金币</p>
+      <div>
+        <a href="{{ url_for('shop') }}">购买得金币</a>
+        <a href="{{ url_for('cart') }}">去确认</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="shop-strip points-strip">
+    <article><span>可选礼品</span><strong>{{ gifts|length }} 件</strong></article>
+    <article><span>兑换车</span><strong>{{ wallet.points_cart_count }} 件</strong></article>
+    <article><span>预计消耗</span><strong>{{ wallet.points_cart_coin }} 金币</strong></article>
+    <article><span>订单写入</span><strong>AddOrder</strong></article>
+  </section>
+
+  <section id="points-products" class="points-grid polished-points-grid commerce-product-grid">
+    {% for gift in gifts %}
+    <article class="points-card polished-points-card commerce-product-card">
+      <div class="product-image-wrap">
+        <img src="{{ url_for('static', filename='assets/' ~ gift.Image) }}" alt="{{ gift.GiftName }}">
+        <span>{{ gift.GiftCategory or "精选礼品" }}</span>
+      </div>
+      <div class="points-card-body">
+        <h2>{{ gift.GiftName }}</h2>
+        <p>库存 {{ gift.GiftNum }} 件，确认兑换后生成原系统订单。</p>
+        <strong>{{ gift.GfitCoin }} 金币</strong>
+        <form method="post" class="product-action-form">
+          <input type="hidden" name="gift_id" value="{{ gift.GiftID }}">
+          <label>数量<input type="number" name="qty" value="1" min="1"></label>
+          <button>加入兑换车</button>
+        </form>
+      </div>
+    </article>
+    {% else %}
+    <article class="empty-cart">
+      <h2>暂无可兑换礼品</h2>
+      <p>请先在运营管理中新增平台礼品。</p>
+    </article>
+    {% endfor %}
+  </section>
+</main>
+{% endblock %}

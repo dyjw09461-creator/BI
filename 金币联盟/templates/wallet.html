@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block content %}
+<main class="commerce-page wallet-page">
+  <section class="commerce-hero wallet-hero">
+    <div>
+      <p class="overline">Bank Card Wallet</p>
+      <h1>银行卡充值</h1>
+      <p>绑定银行卡后充值到会员钱包，再到现金商城购买商品并获得金币。</p>
+      <div class="hero-actions compact-actions">
+        <a class="primary" href="{{ url_for('shop') }}">去现金商城</a>
+        <a href="{{ url_for('cart') }}">查看购物车</a>
+      </div>
+    </div>
+    <div class="balance-panel wallet-balance-card">
+      <span>钱包余额</span>
+      <strong>¥ {{ wallet.balance }}</strong>
+      <small>{{ wallet.cards|length }} 张银行卡 · {{ wallet.cash_cart_count }} 件待结算</small>
+    </div>
+  </section>
+
+  <section class="wallet-metrics">
+    <article><span>绑定银行卡</span><strong>{{ wallet.cards|length }}</strong><small>张</small></article>
+    <article><span>待结算商品</span><strong>{{ wallet.cash_cart_count }}</strong><small>件</small></article>
+    <article><span>购物车金额</span><strong>¥ {{ wallet.cash_cart_total }}</strong><small>现金商品</small></article>
+    <article><span>预计赠送</span><strong>{{ wallet.cash_cart_reward_coin }}</strong><small>金币</small></article>
+  </section>
+
+  <section class="wallet-workspace">
+    <form method="post" class="ops-form wallet-form">
+      <input type="hidden" name="action" value="bind_card">
+      <div class="form-heading">
+        <span>Step 01</span>
+        <h2>绑定银行卡</h2>
+        <p>只保存脱敏卡号，用于演示充值流程。</p>
+      </div>
+      <div class="form-grid">
+        <label>开户银行<input name="bank_name" placeholder="中国工商银行" required></label>
+        <label>持卡人<input name="owner_name" value="{{ session.login_name or '' }}" required></label>
+        <label>银行卡号<input name="card_no" placeholder="6222 0000 0000 1234" required></label>
+        <label>预留手机号<input name="phone" placeholder="13800000000" required></label>
+      </div>
+      <button>绑定银行卡</button>
+    </form>
+
+    <form method="post" class="ops-form wallet-form recharge-form">
+      <input type="hidden" name="action" value="recharge">
+      <div class="form-heading">
+        <span>Step 02</span>
+        <h2>充值到钱包</h2>
+        <p>余额会用于现金商城结算。</p>
+      </div>
+      <label>选择银行卡
+        <select name="card_id" required>
+          {% for card in wallet.cards %}
+          <option value="{{ card.id }}">{{ card.bank_name }} · {{ card.masked }}</option>
+          {% else %}
+          <option value="">请先绑定银行卡</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>充值金额<input name="amount" inputmode="decimal" placeholder="1000.00" required></label>
+      <button {% if not wallet.cards %}disabled{% endif %}>确认充值</button>
+    </form>
+  </section>
+
+  <section class="commerce-grid two ledger-grid">
+    <article class="commerce-panel ledger-panel">
+      <div class="panel-title-row">
+        <h3>已绑定银行卡</h3>
+        <a href="{{ url_for('shop') }}">去消费</a>
+      </div>
+      <table>
+        <tr><th>银行</th><th>卡号</th><th>绑定时间</th></tr>
+        {% for card in wallet.cards %}
+        <tr><td>{{ card.bank_name }}</td><td>{{ card.masked }}</td><td>{{ card.created_at }}</td></tr>
+        {% else %}
+        <tr><td colspan="3" class="table-empty">暂无银行卡，请先完成绑定。</td></tr>
+        {% endfor %}
+      </table>
+    </article>
+    <article class="commerce-panel ledger-panel">
+      <div class="panel-title-row">
+        <h3>最近充值</h3>
+        <a href="{{ url_for('cart') }}">购物车</a>
+      </div>
+      <table>
+        <tr><th>金额</th><th>余额</th><th>时间</th></tr>
+        {% for row in wallet.recharges %}
+        <tr><td>¥ {{ row.amount }}</td><td>¥ {{ row.balance_after }}</td><td>{{ row.created_at }}</td></tr>
+        {% else %}
+        <tr><td colspan="3" class="table-empty">暂无充值记录。</td></tr>
+        {% endfor %}
+      </table>
+    </article>
+  </section>
+</main>
+{% endblock %}

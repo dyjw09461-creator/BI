@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% block content %}
+<main class="merchant-page merchant-dashboard">
+  <section class="merchant-hero merchant-hero-clean">
+    <div>
+      <p class="overline">Merchant Portal</p>
+      <h1>商家商品管理</h1>
+      <p>商品增删改查集中在这个工作台完成：新增商品、编辑商品资料、禁用商品、查看商品图片和积分状态。</p>
+    </div>
+    <a href="{{ url_for('admin_lite') }}">运营管理</a>
+  </section>
+
+  <section class="merchant-summary">
+    <article><span>商家数量</span><strong>{{ businesses|length }}</strong></article>
+    <article><span>商品数量</span><strong>{{ products|length }}</strong></article>
+    <article><span>积分码记录</span><strong>{{ codes|length }}</strong></article>
+  </section>
+
+  <section class="merchant-layout">
+    <div class="merchant-main">
+      <section class="product-library">
+        <div class="merchant-section-title">
+          <div>
+            <span>Product Library</span>
+            <h2>商品库</h2>
+          </div>
+          <p>图片使用项目现有商品素材按商品 ID 自动匹配，商品信息来自 ProductInfo。</p>
+        </div>
+        <div class="merchant-product-table">
+          {% for row in products %}
+          <article class="merchant-product-row">
+            <img src="{{ url_for('static', filename='assets/' ~ row.Image) }}" alt="{{ row.ProductName }}">
+            <div class="merchant-product-info">
+              <span>ID {{ row.ProductID }} · {{ row.BusinessCnName or "未绑定商家" }}</span>
+              <h3>{{ row.ProductName }}</h3>
+              <p>{{ row.ProductBrand or "无品牌" }} / {{ row.ProductType or "未分类" }}</p>
+            </div>
+            <strong>{{ row.ProductCoin or 0 }} 金币</strong>
+            <em class="{{ 'on' if row.ProductStatus else 'off' }}">{{ "上架" if row.ProductStatus else "禁用" }}</em>
+          </article>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="merchant-code-panel">
+        <div class="merchant-section-title">
+          <div>
+            <span>Coin Codes</span>
+            <h2>积分码管理</h2>
+          </div>
+        </div>
+        <div class="merchant-mini-grid">
+          <form method="post" class="ops-form">
+            <input type="hidden" name="action" value="create_code">
+            <h3>上传单个积分码</h3>
+            <label>明文积分码<input name="code" required></label>
+            <label>商品ID<input name="product_id" required></label>
+            <label>批次<input name="batch" value="1"></label>
+            <button>上传积分码</button>
+          </form>
+          <form method="post" class="ops-form">
+            <input type="hidden" name="action" value="batch_create_codes">
+            <h3>批量生成积分码</h3>
+            <label>商品ID<input name="product_id" required></label>
+            <label>生成数量<input name="count" value="10" required></label>
+            <label>前缀<input name="prefix" value="JBI"></label>
+            <label>批次<input name="batch" value="1"></label>
+            <button>批量生成</button>
+          </form>
+        </div>
+      </section>
+    </div>
+
+    <aside class="merchant-tools">
+      <form method="post" class="ops-form merchant-tool-card">
+        <input type="hidden" name="action" value="create_product">
+        <h2>新增商品</h2>
+        <p>新增后会进入左侧商品库，图片按商品 ID 自动匹配现有素材。</p>
+        <label>商品名称<input name="name" required></label>
+        <label>商家ID<input name="business_id" value="{{ session.business_id or '' }}" required></label>
+        <label>品牌<input name="brand"></label>
+        <label>类型<input name="type"></label>
+        <label>商品积分<input name="coin" value="0"></label>
+        <button>新增商品</button>
+      </form>
+
+      <form method="post" class="ops-form merchant-tool-card">
+        <input type="hidden" name="action" value="update_product">
+        <h2>编辑商品</h2>
+        <p>按商品 ID 修改名称、品牌、类型、积分和状态。</p>
+        <label>商品ID<input name="product_id" required></label>
+        <label>商品名称<input name="name" required></label>
+        <label>品牌<input name="brand"></label>
+        <label>类型<input name="type"></label>
+        <label>商品积分<input name="coin" required></label>
+        <label>状态
+          <select name="status">
+            <option value="1">上架</option>
+            <option value="0">禁用</option>
+          </select>
+        </label>
+        <button>保存修改</button>
+      </form>
+
+      <form method="post" class="ops-form merchant-tool-card danger-zone">
+        <input type="hidden" name="action" value="disable_product">
+        <h2>删除 / 禁用商品</h2>
+        <p>将商品状态置为禁用，保留历史交易数据用于 BI 追溯。</p>
+        <label>商品ID<input name="product_id" required></label>
+        <button>禁用商品</button>
+      </form>
+
+      <details class="merchant-register-drawer">
+        <summary>商家资料补录</summary>
+        <form method="post" class="ops-form">
+          <input type="hidden" name="action" value="create_business">
+          <label>商家中文名<input name="name" required></label>
+          <label>商家英文名<input name="en_name" placeholder="可选"></label>
+          <button>注册商家</button>
+        </form>
+      </details>
+    </aside>
+  </section>
+
+  <section class="merchant-bottom">
+    <article class="commerce-panel">
+      <h3>最近商家</h3>
+      <table><tr><th>ID</th><th>商家</th><th>状态</th></tr>{% for row in businesses[:8] %}<tr><td>{{ row.BusinessID }}</td><td>{{ row.BusinessCnName }}</td><td>{{ row.BusinessStatus }}</td></tr>{% endfor %}</table>
+    </article>
+    <article class="commerce-panel">
+      <h3>最近积分码</h3>
+      <table><tr><th>积分码</th><th>商品</th><th>状态</th></tr>{% for row in codes[:8] %}<tr><td>{{ row.JFCode1 }}</td><td>{{ row.ProductName }}</td><td>{{ row.JFStatus }}</td></tr>{% endfor %}</table>
+    </article>
+  </section>
+</main>
+{% endblock %}

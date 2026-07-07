@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>金币联盟登录</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/mall.css') }}?v=20260707-auth">
+</head>
+<body class="auth-body">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}<div class="flash auth-flash {{ category }}">{{ message }}</div>{% endfor %}
+  {% endwith %}
+  <main class="auth-shell">
+    <section class="auth-brand">
+      <img src="{{ url_for('static', filename='assets/JBI.jpg') }}" alt="金币联盟">
+      <p class="overline">JBI Gold Coin Union</p>
+      <h1>金币联盟</h1>
+      <p>会员用积分兑换礼品，商家上传商品与积分码，所有业务数据进入 BI 报表分析。</p>
+      <div class="auth-proof">
+        <span>会员兑换</span>
+        <span>商家积分</span>
+        <span>BI 联动</span>
+      </div>
+    </section>
+
+    <section class="auth-panel" data-mode="user">
+      <div class="auth-tabs">
+        <button type="button" class="active" data-auth-tab="login">用户登录</button>
+        <button type="button" data-auth-tab="register">用户注册</button>
+      </div>
+
+      <form method="post" class="auth-form auth-login">
+        <input type="hidden" name="mode" value="login">
+        <input type="hidden" name="role" value="user">
+        <h2>用户登录</h2>
+        <p>默认账号：user / 123456</p>
+        <label>账号<input name="login_name" value="user" required></label>
+        <label>密码<input name="password" type="password" value="123456" required></label>
+        <button>进入金币联盟</button>
+      </form>
+
+      <form method="post" class="auth-form auth-register hidden">
+        <input type="hidden" name="mode" value="register">
+        <input type="hidden" name="role" value="user">
+        <h2>用户注册</h2>
+        <p>注册后直接进入会员客户端。</p>
+        <label>登录名<input name="login_name" required></label>
+        <label>真实姓名<input name="real_name" required></label>
+        <label>密码<input name="password" type="password" required></label>
+        <label>手机号<input name="phone" required></label>
+        <label>邮箱<input name="email"></label>
+        <button>注册并进入</button>
+      </form>
+
+      <form method="post" class="auth-form auth-merchant hidden">
+        <input type="hidden" name="mode" value="login">
+        <input type="hidden" name="role" value="merchant">
+        <h2>商家登录</h2>
+        <p>商家账号：merchant / 123456</p>
+        <label>商家账号<input name="login_name" value="merchant" required></label>
+        <label>密码<input name="password" type="password" value="123456" required></label>
+        <button>进入商家中心</button>
+      </form>
+
+      <form method="post" class="auth-form auth-merchant-register hidden">
+        <input type="hidden" name="mode" value="merchant_register">
+        <input type="hidden" name="role" value="merchant">
+        <h2>商家注册</h2>
+        <p>提交后自动创建商家和积分账户，并进入商家中心。</p>
+        <div class="auth-grid">
+          <label>商家名称<input name="name" required></label>
+          <label>登录账号<input name="merchant_login" required></label>
+          <label>登录密码<input name="merchant_password" type="password" required></label>
+          <label>经营类目<input name="category" placeholder="家电 / 食品 / 数码"></label>
+          <label>联系人<input name="contact_name" required></label>
+          <label>联系电话<input name="phone" required></label>
+          <label>邮箱<input name="email"></label>
+          <label>营业执照号<input name="license_no"></label>
+        </div>
+        <label>商家地址<input name="address" placeholder="省市区 + 街道门牌" required></label>
+        <label>备注<input name="remark" placeholder="可填写配送范围、合作说明等"></label>
+        <button>注册商家并进入</button>
+      </form>
+
+      <button type="button" class="merchant-switch">商家登录</button>
+      <button type="button" class="user-switch hidden">返回用户登录</button>
+      <button type="button" class="merchant-register-switch hidden">商家注册</button>
+      <button type="button" class="merchant-login-switch hidden">返回商家登录</button>
+    </section>
+  </main>
+  <script>
+    const panel = document.querySelector('.auth-panel');
+    const login = document.querySelector('.auth-login');
+    const register = document.querySelector('.auth-register');
+    const merchant = document.querySelector('.auth-merchant');
+    const merchantRegister = document.querySelector('.auth-merchant-register');
+    const merchantSwitch = document.querySelector('.merchant-switch');
+    const userSwitch = document.querySelector('.user-switch');
+    const merchantRegisterSwitch = document.querySelector('.merchant-register-switch');
+    const merchantLoginSwitch = document.querySelector('.merchant-login-switch');
+    const tabs = document.querySelectorAll('[data-auth-tab]');
+    function show(name){
+      login.classList.toggle('hidden', name !== 'login');
+      register.classList.toggle('hidden', name !== 'register');
+      merchant.classList.toggle('hidden', name !== 'merchant');
+      merchantRegister.classList.toggle('hidden', name !== 'merchantRegister');
+      merchantSwitch.classList.toggle('hidden', name === 'merchant' || name === 'merchantRegister');
+      userSwitch.classList.toggle('hidden', name !== 'merchant' && name !== 'merchantRegister');
+      merchantRegisterSwitch.classList.toggle('hidden', name !== 'merchant');
+      merchantLoginSwitch.classList.toggle('hidden', name !== 'merchantRegister');
+      tabs.forEach(btn => btn.classList.toggle('active', btn.dataset.authTab === name));
+      panel.dataset.mode = name;
+    }
+    tabs.forEach(btn => btn.addEventListener('click', () => show(btn.dataset.authTab)));
+    merchantSwitch.addEventListener('click', () => show('merchant'));
+    userSwitch.addEventListener('click', () => show('login'));
+    merchantRegisterSwitch.addEventListener('click', () => show('merchantRegister'));
+    merchantLoginSwitch.addEventListener('click', () => show('merchant'));
+  </script>
+</body>
+</html>

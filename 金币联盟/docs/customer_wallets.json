@@ -1,0 +1,159 @@
+{
+  "49998": {
+    "balance_cents": 9999001300,
+    "cards": [
+      {
+        "id": "card-20260707170158489391",
+        "bank_name": "演示银行",
+        "owner_name": "演示用户",
+        "phone": "13800000000",
+        "masked": "6222 **** **** 0158",
+        "created_at": "2026-07-07 17:01:58"
+      }
+    ],
+    "recharges": [
+      {
+        "id": "recharge-20260707170158510394",
+        "amount_cents": 100000,
+        "balance_after_cents": 100000,
+        "card_id": "card-20260707170158489391",
+        "created_at": "2026-07-07 17:01:58"
+      },
+      {
+        "id": "recharge-20260707170721569263",
+        "amount_cents": 10000000000,
+        "balance_after_cents": 10000090100,
+        "card_id": "card-20260707170158489391",
+        "created_at": "2026-07-07 17:07:21"
+      }
+    ],
+    "cash_orders": [
+      {
+        "id": "cash-20260707170219981174",
+        "product_id": "cash-03",
+        "product_name": "家用梳妆椅",
+        "qty": 1,
+        "total_cents": 9900,
+        "reward_coin": 198,
+        "balance_after_cents": 90100,
+        "created_at": "2026-07-07 17:02:19"
+      },
+      {
+        "id": "cash-20260707170916405880",
+        "product_id": "cash-01",
+        "product_name": "智能学习机 K10",
+        "qty": 1,
+        "total_cents": 129900,
+        "reward_coin": 9999,
+        "balance_after_cents": 9999960200,
+        "created_at": "2026-07-07 17:09:16"
+      },
+      {
+        "id": "cash-20260707170924984217",
+        "product_id": "cash-01",
+        "product_name": "智能学习机 K10",
+        "qty": 1,
+        "total_cents": 129900,
+        "reward_coin": 9999,
+        "balance_after_cents": 9999830300,
+        "created_at": "2026-07-07 17:09:24"
+      },
+      {
+        "id": "cash-20260707170927460631",
+        "product_id": "cash-01",
+        "product_name": "智能学习机 K10",
+        "qty": 1,
+        "total_cents": 129900,
+        "reward_coin": 9999,
+        "balance_after_cents": 9999700400,
+        "created_at": "2026-07-07 17:09:27"
+      },
+      {
+        "id": "cash-cart-20260707172815761943",
+        "product_id": "cart",
+        "product_name": "购物车合并结算",
+        "items": [
+          {
+            "product_id": "cash-01",
+            "product_name": "智能学习机 K10",
+            "qty": 2
+          },
+          {
+            "product_id": "cash-02",
+            "product_name": "复古蓝牙音箱",
+            "qty": 1
+          },
+          {
+            "product_id": "cash-03",
+            "product_name": "家用梳妆椅",
+            "qty": 1
+          }
+        ],
+        "qty": 4,
+        "total_cents": 299500,
+        "reward_coin": 21674,
+        "balance_after_cents": 9999400900,
+        "created_at": "2026-07-07 17:28:15"
+      },
+      {
+        "id": "cash-cart-20260707173737406398",
+        "product_id": "cart",
+        "product_name": "购物车合并结算",
+        "items": [
+          {
+            "product_id": "cash-01",
+            "product_name": "智能学习机 K10",
+            "qty": 1
+          },
+          {
+            "product_id": "cash-03",
+            "product_name": "家用梳妆椅",
+            "qty": 1
+          }
+        ],
+        "qty": 2,
+        "total_cents": 139800,
+        "reward_coin": 10197,
+        "balance_after_cents": 9999261100,
+        "created_at": "2026-07-07 17:37:37"
+      },
+      {
+        "id": "cash-cart-20260707220319435272",
+        "product_id": "cart",
+        "product_name": "购物车合并结算",
+        "items": [
+          {
+            "product_id": "cash-01",
+            "product_name": "智能学习机 K10",
+            "qty": 2
+          }
+        ],
+        "qty": 2,
+        "total_cents": 259800,
+        "reward_coin": 19998,
+        "balance_after_cents": 9999001300,
+        "created_at": "2026-07-07 22:03:19"
+      }
+    ],
+    "cash_cart": [
+      {
+        "product_id": "cash-01",
+        "qty": 2,
+        "created_at": "2026-07-07 22:09:13"
+      }
+    ],
+    "points_cart": [
+      {
+        "gift_id": 13,
+        "qty": 1,
+        "created_at": "2026-07-07 22:12:19"
+      }
+    ]
+  },
+  "1": {
+    "balance_cents": 0,
+    "cards": [],
+    "recharges": [],
+    "cash_orders": []
+  }
+}

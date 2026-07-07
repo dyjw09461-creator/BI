@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{ title or "金币联盟" }}</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/mall.css') }}?v=20260706-premium">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/mall.css') }}?v=20260707-commerce-redesign">
 </head>
 <body>
   <header class="site-header">
@@ -16,20 +16,30 @@
       </div>
     </div>
     <div class="nav-shell">
-      <a class="logo" href="{{ url_for('index') }}">
+      <a class="logo" href="{{ url_for('mall_home') if session.get('role') == 'user' else url_for('merchant') if session.get('role') == 'merchant' else url_for('auth_home') }}">
         <img src="{{ url_for('static', filename='assets/JBI.jpg') }}" alt="JBI">
         <span>金币联盟<small>Gold Coin Union</small></span>
       </a>
       <nav class="main-nav">
-        <a href="{{ url_for('index') }}">联盟首页</a>
-        <a href="{{ url_for('gift_center') }}">礼品中心</a>
-        <a href="{{ url_for('cart') }}">我的购物车</a>
+        {% if session.get('role') == 'merchant' %}
+        <a href="{{ url_for('merchant') }}">商家中心</a>
+        <a href="{{ url_for('admin_lite') }}">运营管理</a>
+        {% else %}
+        <a href="{{ url_for('mall_home') }}">联盟首页</a>
+        <a href="{{ url_for('shop') }}">现金商城</a>
+        <a href="{{ url_for('wallet') }}">银行卡充值</a>
+        <a href="{{ url_for('cart') }}">购物车</a>
+        <a href="{{ url_for('points_mall') }}">积分商城</a>
         <a href="{{ url_for('profile') }}">个人中心</a>
+        {% if not session.get('role') %}
+        <a href="{{ url_for('merchant') }}">商家中心</a>
+        {% endif %}
+        {% endif %}
       </nav>
       <div class="account-links">
-        <a href="{{ url_for('register') }}">免费注册</a>
+        <a href="{{ url_for('auth_home') }}">登录入口</a>
         {% if session.login_name %}
-        <a href="{{ url_for('profile') }}">{{ session.login_name }}</a>
+        <a href="{{ url_for('merchant') if session.get('role') == 'merchant' else url_for('profile') }}">{{ session.login_name }}</a>
         <a href="{{ url_for('logout') }}">退出</a>
         {% else %}
         <a href="{{ url_for('login') }}">登录</a>

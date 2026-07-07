@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block content %}
+<main class="ops-page">
+  <section class="ops-hero">
+    <p class="overline">Business Intelligence Training</p>
+    <h1>积分平台运营管理</h1>
+    <p>按《商务智能》实训项目说明文档补齐会员、商家、商品、礼品、积分码、积分和兑换流程。</p>
+  </section>
+
+  <section class="ops-section">
+    <div class="section-title compact"><span>Requirement Matrix</span><h2>功能逐项对照</h2><p>对照 Word 文档要求，页面提供对应入口。</p></div>
+    <div class="requirement-grid">
+      {% for name, status, note in requirements %}
+      <article>
+        <strong>{{ name }}</strong>
+        <span>{{ status }}</span>
+        <p>{{ note }}</p>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="ops-section ops-forms">
+    <div class="section-title compact"><span>Operations</span><h2>业务操作</h2><p>表单直接写入 BIDemo_AccumulateCoin。</p></div>
+    <div class="ops-grid">
+      <form method="post" class="ops-form">
+        <input type="hidden" name="action" value="create_business">
+        <h3>商家注册</h3>
+        <label>中文名<input name="name" required></label>
+        <label>英文名<input name="en_name"></label>
+        <button>新增商家</button>
+      </form>
+      <form method="post" class="ops-form">
+        <input type="hidden" name="action" value="disable_business">
+        <h3>禁用商家</h3>
+        <label>商家ID<input name="business_id" required></label>
+        <button>检查并禁用</button>
+      </form>
+      <form method="post" class="ops-form">
+        <input type="hidden" name="action" value="create_product">
+        <h3>新增商家商品</h3>
+        <label>商品名<input name="name" required></label>
+        <label>商家ID<input name="business_id" required></label>
+        <label>品牌<input name="brand"></label>
+        <label>类型<input name="type"></label>
+        <label>商品积分<input name="coin" value="0"></label>
+        <button>新增商品</button>
+      </form>
+      <form method="post" class="ops-form">
+        <input type="hidden" name="action" value="adjust_product_coin">
+        <h3>商品积分调整</h3>
+        <label>商品ID<input name="product_id" required></label>
+        <label>新积分<input name="coin" required></label>
+        <button>调整积分</button>
+      </form>
+      <form method="post" class="ops-form">
+        <input type="hidden" name="action" value="disable_product">
+        <h3>禁用商品</h3>
+        <label>商品ID<input name="product_id" required></label>
+        <button>禁用商品</button>
+      </form>
+      <form method="post" class="ops-form">
+        <input type="hidden" name="action" value="create_gift">
+        <h3>新增平台礼品</h3>
+        <label>礼品名<input name="name" required></label>
+        <label>分类<input name="category"></label>
+        <label>兑换金币<input name="coin" value="0"></label>
+        <label>库存<input name="num" value="0"></label>
+        <button>新增礼品</button>
+      </form>
+      <form method="post" class="ops-form">
+        <input type="hidden" name="action" value="disable_gift">
+        <h3>禁用礼品</h3>
+        <label>礼品ID<input name="gift_id" required></label>
+        <button>禁用礼品</button>
+      </form>
+      <form method="post" class="ops-form">
+        <input type="hidden" name="action" value="create_code">
+        <h3>单个积分码上传</h3>
+        <label>明文积分码<input name="code" required></label>
+        <label>商品ID<input name="product_id" required></label>
+        <label>批次<input name="batch" value="1"></label>
+        <button>生成积分码</button>
+      </form>
+      <form method="post" class="ops-form">
+        <input type="hidden" name="action" value="batch_create_codes">
+        <h3>批量积分码脚本</h3>
+        <label>商品ID<input name="product_id" required></label>
+        <label>数量<input name="count" value="10" required></label>
+        <label>前缀<input name="prefix" value="JBI"></label>
+        <label>批次<input name="batch" value="1"></label>
+        <button>批量生成</button>
+      </form>
+      <form method="post" class="ops-form">
+        <input type="hidden" name="action" value="cancel_order">
+        <h3>取消兑换</h3>
+        <label>订单ID<input name="order_id" required></label>
+        <button>取消并回补</button>
+      </form>
+      <form method="post" class="ops-form">
+        <input type="hidden" name="action" value="complete_order">
+        <h3>完成订单</h3>
+        <label>订单ID<input name="order_id" required></label>
+        <button>设置完成</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="ops-section">
+    <div class="section-title compact"><span>Current Data</span><h2>当前业务数据</h2><p>用于检查新增、禁用、调整和订单状态变化。</p></div>
+    <div class="data-panels">
+      <article><h3>商家</h3><table><tr><th>ID</th><th>名称</th><th>状态</th></tr>{% for row in businesses %}<tr><td>{{ row.BusinessID }}</td><td>{{ row.BusinessCnName }}</td><td>{{ row.BusinessStatus }}</td></tr>{% endfor %}</table></article>
+      <article><h3>商品</h3><table><tr><th>ID</th><th>商品</th><th>积分</th><th>状态</th></tr>{% for row in products %}<tr><td>{{ row.ProductID }}</td><td>{{ row.ProductName }}</td><td>{{ row.ProductCoin }}</td><td>{{ row.ProductStatus }}</td></tr>{% endfor %}</table></article>
+      <article><h3>礼品</h3><table><tr><th>ID</th><th>礼品</th><th>金币</th><th>库存</th><th>状态</th></tr>{% for row in gifts %}<tr><td>{{ row.GiftID }}</td><td>{{ row.GiftName }}</td><td>{{ row.GfitCoin }}</td><td>{{ row.GiftNum }}</td><td>{{ row.GiftStatus }}</td></tr>{% endfor %}</table></article>
+      <article><h3>积分码</h3><table><tr><th>明文码</th><th>商品</th><th>状态</th><th>批次</th></tr>{% for row in codes %}<tr><td>{{ row.JFCode1 }}</td><td>{{ row.ProductName }}</td><td>{{ row.JFStatus }}</td><td>{{ row.ImportBatch }}</td></tr>{% endfor %}</table></article>
+      <article><h3>订单</h3><table><tr><th>ID</th><th>会员</th><th>金币</th><th>状态</th></tr>{% for row in orders %}<tr><td>{{ row.OrderID }}</td><td>{{ row.CustomerID }}</td><td>{{ row.TotalCoin }}</td><td>{{ row.OrderStatus }}</td></tr>{% endfor %}</table></article>
+    </div>
+  </section>
+</main>
+{% endblock %}

@@ -1,26 +1,152 @@
 {% extends "base.html" %}
 {% block content %}
-<main class="form-page wide">
-  <form method="post" class="mall-form">
-    <h1>{{ "礼品中心" if gift_center else "购物车" }}</h1>
-    {% if gift_center %}
-    <p class="form-note">浏览当前可兑换礼品。需要结算时进入购物车并填写会员与账户信息。</p>
-    {% else %}
-    <label>会员ID<input name="customer_id" value="{{ session.customer_id or '' }}" required></label>
-    <label>账户ID<input name="account_id" value="{{ session.account_id or '' }}" required></label>
-    {% endif %}
-    <label>礼品
-      <select name="gift_id" {% if gift_center %}disabled{% endif %}>
-        {% for gift in gifts %}<option value="{{ gift.GiftID }}">{{ gift.GiftName }} - {{ gift.GfitCoin }}金币 - 库存{{ gift.GiftNum }}</option>{% endfor %}
-      </select>
-    </label>
-    {% if not gift_center %}
-    <label>数量<input name="qty" value="1" required></label>
-    <button>结算兑换</button>
-    {% if result %}<pre>{{ result }}</pre>{% endif %}
-    {% else %}
-    <a class="button-link" href="{{ url_for('cart') }}">去购物车兑换</a>
-    {% endif %}
-  </form>
+<main class="commerce-page cart-page">
+  <section class="commerce-hero cart-hero">
+    <div>
+      <p class="overline">Shopping Cart</p>
+      <h1>购物车</h1>
+      <p>现金商品结算后发放金币；积分礼品确认兑换后写入原订单数据库。</p>
+      <div class="hero-actions compact-actions">
+        <a class="primary" href="{{ url_for('shop') }}">继续购买</a>
+        <a href="{{ url_for('points_mall') }}">继续兑换</a>
+      </div>
+    </div>
+    <div class="cart-total-card">
+      <span>钱包余额</span>
+      <strong>¥ {{ wallet.balance }}</strong>
+      <p>现金车 {{ wallet.cash_cart_count }} 件 · 兑换车 {{ wallet.points_cart_count }} 件</p>
+      <a href="{{ url_for('wallet') }}">去充值</a>
+    </div>
+  </section>
+
+  <section id="cash-cart" class="cart-section">
+    <div class="cart-section-head">
+      <div>
+        <span>Cash Checkout</span>
+        <h2>现金商品</h2>
+      </div>
+      <div class="cart-section-stats">
+        <b>{{ wallet.cash_cart_count }} 件</b>
+        <b>¥ {{ wallet.cash_cart_total }}</b>
+        <b>赠 {{ wallet.cash_cart_reward_coin }} 金币</b>
+      </div>
+    </div>
+
+    <div class="cart-workspace redesigned-cart-workspace">
+      <div class="cart-list redesigned-cart-list">
+        {% for item in wallet.cash_cart %}
+        <article class="cart-row redesigned-cart-row">
+          <img class="cart-thumb" src="{{ url_for('static', filename='assets/' ~ item.image) }}" alt="{{ item.name }}">
+          <div class="cart-item-main">
+            <span>{{ item.tag }}</span>
+            <h3>{{ item.name }}</h3>
+            <p>单价 ¥ {{ item.price }} · 赠 {{ item.reward_coin }} 金币/件</p>
+          </div>
+          <form method="post" class="qty-form redesigned-qty-form">
+            <input type="hidden" name="action" value="update_cash_cart">
+            <input type="hidden" name="product_id" value="{{ item.id }}">
+            <label>数量<input type="number" name="qty" value="{{ item.qty }}" min="1"></label>
+            <button>更新</button>
+          </form>
+          <div class="line-total">
+            <strong>¥ {{ item.line_total }}</strong>
+            <span>赠 {{ item.line_reward_coin }} 金币</span>
+          </div>
+          <form method="post" class="remove-form redesigned-remove-form">
+            <input type="hidden" name="action" value="remove_cash_cart">
+            <input type="hidden" name="product_id" value="{{ item.id }}">
+            <button>移除</button>
+          </form>
+        </article>
+        {% else %}
+        <article class="empty-cart redesigned-empty">
+          <h2>现金购物车为空</h2>
+          <p>去现金商城挑选商品，加入后这里会显示待结算明细。</p>
+          <a href="{{ url_for('shop') }}">去现金商城</a>
+        </article>
+        {% endfor %}
+      </div>
+
+      <aside class="cart-summary redesigned-cart-summary">
+        <span>结算</span>
+        <h2>现金商品</h2>
+        <dl>
+          <dt>商品数量</dt><dd>{{ wallet.cash_cart_count }} 件</dd>
+          <dt>应付金额</dt><dd>¥ {{ wallet.cash_cart_total }}</dd>
+          <dt>赠送金币</dt><dd>{{ wallet.cash_cart_reward_coin }}</dd>
+        </dl>
+        <form method="post">
+          <input type="hidden" name="action" value="checkout_cash_cart">
+          <button {% if not wallet.cash_cart %}disabled{% endif %}>确认结算并赠金币</button>
+        </form>
+        <a href="{{ url_for('wallet') }}">银行卡充值</a>
+      </aside>
+    </div>
+  </section>
+
+  <section id="points-cart" class="cart-section points-cart-section">
+    <div class="cart-section-head">
+      <div>
+        <span>Points Redemption</span>
+        <h2>积分礼品</h2>
+      </div>
+      <div class="cart-section-stats">
+        <b>{{ wallet.points_cart_count }} 件</b>
+        <b>{{ wallet.points_cart_coin }} 金币</b>
+        <b>数据库礼品</b>
+      </div>
+    </div>
+
+    <div class="cart-workspace redesigned-cart-workspace points-cart-workspace">
+      <div class="cart-list redesigned-cart-list">
+        {% for item in wallet.points_cart %}
+        <article class="cart-row redesigned-cart-row">
+          <img class="cart-thumb" src="{{ url_for('static', filename='assets/' ~ item.Image) }}" alt="{{ item.GiftName }}">
+          <div class="cart-item-main">
+            <span>{{ item.GiftCategory or "积分礼品" }}</span>
+            <h3>{{ item.GiftName }}</h3>
+            <p>库存 {{ item.GiftNum }} 件 · 单价 {{ item.GfitCoin }} 金币</p>
+          </div>
+          <form method="post" class="qty-form redesigned-qty-form">
+            <input type="hidden" name="action" value="update_points_cart">
+            <input type="hidden" name="gift_id" value="{{ item.GiftID }}">
+            <label>数量<input type="number" name="qty" value="{{ item.qty }}" min="1"></label>
+            <button>更新</button>
+          </form>
+          <div class="line-total">
+            <strong>{{ item.line_coin }} 金币</strong>
+            <span>确认后生成订单</span>
+          </div>
+          <form method="post" class="remove-form redesigned-remove-form">
+            <input type="hidden" name="action" value="remove_points_cart">
+            <input type="hidden" name="gift_id" value="{{ item.GiftID }}">
+            <button>移除</button>
+          </form>
+        </article>
+        {% else %}
+        <article class="empty-cart redesigned-empty">
+          <h2>积分兑换车为空</h2>
+          <p>积分商城礼品来自数据库，加入兑换车后再确认兑换。</p>
+          <a href="{{ url_for('points_mall') }}">去积分商城</a>
+        </article>
+        {% endfor %}
+      </div>
+
+      <aside class="cart-summary redesigned-cart-summary points-summary">
+        <span>兑换</span>
+        <h2>积分礼品</h2>
+        <dl>
+          <dt>礼品数量</dt><dd>{{ wallet.points_cart_count }} 件</dd>
+          <dt>预计消耗</dt><dd>{{ wallet.points_cart_coin }} 金币</dd>
+          <dt>写入过程</dt><dd>AddOrder</dd>
+        </dl>
+        <form method="post">
+          <input type="hidden" name="action" value="checkout_points_cart">
+          <button {% if not wallet.points_cart %}disabled{% endif %}>确认兑换并写入数据库</button>
+        </form>
+        <a href="{{ url_for('shop') }}">购买商品得金币</a>
+      </aside>
+    </div>
+  </section>
 </main>
 {% endblock %}

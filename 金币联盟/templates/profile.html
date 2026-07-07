@@ -1,15 +1,108 @@
 {% extends "base.html" %}
 {% block content %}
-<main class="profile">
-  <section class="profile-card">
-    <h1>个人信息</h1>
-    <p>会员：{{ member.LoginName }} / {{ member.RealName }}</p>
-    <p>账户ID：{{ member.AccountID }}，可用金币：<strong>{{ member.ValidCoin }}</strong></p>
-    <a href="{{ url_for('profile_edit') }}">修改个人信息</a>
+<main class="commerce-page profile-page">
+  <section class="commerce-hero profile-hero">
+    <div>
+      <p class="overline">Member Center</p>
+      <h1>个人中心</h1>
+      <p>查看会员资料、钱包余额、现金订单和积分兑换记录，方便核对 BI 实训中的会员行为链路。</p>
+    </div>
+    <div class="balance-panel">
+      <span>可用金币</span>
+      <strong>{{ member.ValidCoin or 0 }}</strong>
+      <a href="{{ url_for('points_mall') }}">去兑换</a>
+    </div>
   </section>
-  <section class="profile-grid">
-    <article><h2>订单</h2><table>{% for row in orders %}<tr><td>{{ row.OrderID }}</td><td>{{ row.OrderTime }}</td><td>{{ row.TotalCoin }}</td></tr>{% endfor %}</table></article>
-    <article><h2>积分明细</h2><table>{% for row in trades %}<tr><td>{{ row.TradeLogID }}</td><td>{{ row.TradeType }}</td><td>{{ row.Coin }}</td></tr>{% endfor %}</table></article>
+
+  <section class="profile-metrics">
+    <article>
+      <span>钱包余额</span>
+      <strong>¥ {{ wallet.balance }}</strong>
+    </article>
+    <article>
+      <span>现金订单</span>
+      <strong>{{ wallet.cash_orders|length }}</strong>
+    </article>
+    <article>
+      <span>绑定银行卡</span>
+      <strong>{{ wallet.cards|length }}</strong>
+    </article>
+    <article>
+      <span>积分流水</span>
+      <strong>{{ trades|length }}</strong>
+    </article>
+  </section>
+
+  <section class="profile-layout">
+    <aside class="profile-side">
+      <article class="commerce-panel member-card">
+        <h2>会员资料</h2>
+        <dl>
+          <dt>登录名</dt><dd>{{ member.LoginName }}</dd>
+          <dt>姓名</dt><dd>{{ member.RealName or "未填写" }}</dd>
+          <dt>账户ID</dt><dd>{{ member.AccountID }}</dd>
+          <dt>手机</dt><dd>{{ member.Phone or "未填写" }}</dd>
+          <dt>邮箱</dt><dd>{{ member.Email or "未填写" }}</dd>
+        </dl>
+        <a href="{{ url_for('profile_edit') }}">修改资料</a>
+      </article>
+
+      <article class="commerce-panel">
+        <h2>银行卡</h2>
+        <div class="compact-list">
+          {% for card in wallet.cards %}
+          <p><strong>{{ card.bank_name }}</strong><span>{{ card.masked }}</span></p>
+          {% else %}
+          <p class="empty-line">还没有绑定银行卡。</p>
+          {% endfor %}
+        </div>
+        <a class="panel-link" href="{{ url_for('wallet') }}">管理银行卡</a>
+      </article>
+    </aside>
+
+    <div class="profile-main">
+      <article class="commerce-panel">
+        <div class="panel-title-row">
+          <h2>现金订单</h2>
+          <a href="{{ url_for('shop') }}">继续购买</a>
+        </div>
+        <table>
+          <tr><th>商品</th><th>数量</th><th>消费</th><th>赠送金币</th><th>时间</th></tr>
+          {% for row in wallet.cash_orders %}
+          <tr><td>{{ row.product_name }}</td><td>{{ row.qty }}</td><td>¥ {{ row.total }}</td><td>{{ row.reward_coin }}</td><td>{{ row.created_at }}</td></tr>
+          {% else %}
+          <tr><td colspan="5" class="table-empty">暂无现金订单。</td></tr>
+          {% endfor %}
+        </table>
+      </article>
+
+      <article class="commerce-panel">
+        <div class="panel-title-row">
+          <h2>积分兑换订单</h2>
+          <a href="{{ url_for('points_mall') }}">积分商城</a>
+        </div>
+        <table>
+          <tr><th>订单ID</th><th>时间</th><th>状态</th><th>消耗金币</th></tr>
+          {% for row in orders %}
+          <tr><td>{{ row.OrderID }}</td><td>{{ row.OrderTime }}</td><td>{{ row.OrderStatus }}</td><td>{{ row.TotalCoin }}</td></tr>
+          {% else %}
+          <tr><td colspan="4" class="table-empty">暂无积分兑换订单。</td></tr>
+          {% endfor %}
+        </table>
+      </article>
+
+      <article class="commerce-panel">
+        <h2>积分流水</h2>
+        <table>
+          <tr><th>流水ID</th><th>时间</th><th>类型</th><th>积分码</th><th>金币</th></tr>
+          {% for row in trades %}
+          <tr><td>{{ row.TradeLogID }}</td><td>{{ row.TradeTime }}</td><td>{{ row.TradeType }}</td><td>{{ row.JFCode or "-" }}</td><td>{{ row.Coin }}</td></tr>
+          {% else %}
+          <tr><td colspan="5" class="table-empty">暂无积分流水。</td></tr>
+          {% endfor %}
+        </table>
+      </article>
+    </div>
   </section>
 </main>
 {% endblock %}

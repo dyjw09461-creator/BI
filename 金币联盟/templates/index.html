@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
-<main class="home">
-<section class="hero">
+<main class="home retail-home">
+<section class="hero retail-hero">
   <div class="hero-copy">
     <p class="overline">JBI GOLD COIN UNION</p>
-    <h1>把积分变成<br>值得期待的礼物</h1>
-    <p class="subtitle">保留原金币联盟识别，重新整理为更克制、更有质感的会员兑换商城。</p>
+    <h1>先购物得金币<br>再用金币兑好礼</h1>
+    <p class="subtitle">现金商城负责银行卡充值和购买商品赠送金币，积分商城负责用金币兑换礼品。</p>
     <div class="hero-actions">
-      <a class="primary" href="{{ url_for('earn_coin') }}">立即积金币</a>
-      <a href="{{ url_for('gift_center') }}">兑换好礼</a>
+      <a class="primary" href="{{ url_for('shop') }}">去现金商城</a>
+      <a href="{{ url_for('points_mall') }}">去积分商城</a>
     </div>
   </div>
   <div class="hero-media">
@@ -16,25 +16,29 @@
     <div class="media-badge"><strong>JBI</strong><span>Member Rewards</span></div>
   </div>
 </section>
-<section class="quick">
-  <a href="{{ url_for('earn_coin') }}">积金币</a>
-  <a href="{{ url_for('gift_center') }}">兑好礼</a>
-  <a href="#">享活动</a>
+<section class="quick retail-quick">
+  <a href="{{ url_for('wallet') }}">银行卡充值</a>
+  <a href="{{ url_for('shop') }}">买商品送金币</a>
+  <a href="{{ url_for('cart') }}">购物车结算</a>
+  <a href="{{ url_for('points_mall') }}">金币兑商品</a>
 </section>
-<nav class="tabs">
-  <a href="{{ url_for('index') }}">首页</a>
-  <a href="{{ url_for('gift_center') }}">礼品中心</a>
+<nav class="tabs retail-tabs">
+  <a href="{{ url_for('mall_home') }}">首页</a>
+  <a href="{{ url_for('shop') }}">现金商城</a>
+  <a href="{{ url_for('wallet') }}">银行卡充值</a>
   <a href="{{ url_for('cart') }}">购物车</a>
+  <a href="{{ url_for('points_mall') }}">积分商城</a>
   <a href="{{ url_for('profile') }}">个人中心</a>
 </nav>
-<main class="coin-zone">
-  <div class="section-title"><span>Selected Rewards</span><h2>金币好礼精选</h2><p>按原九宫格商品重排，弱化廉价大色块，突出商品本身。</p></div>
-  <section class="product-grid">
-    {% for image, price, name in products %}
-    <article class="product-card">
-      <img src="{{ url_for('static', filename='assets/' ~ image) }}" alt="{{ name }}">
-      <div class="buy-row"><strong>{{ price }}</strong><button>❤</button><a href="{{ url_for('cart') }}">加入购物车</a></div>
-      <p>{{ name }}</p>
+<main class="coin-zone cash-preview-zone">
+  <div class="section-title"><span>Cash Store</span><h2>现金商品精选</h2><p>这里显示的是人民币现金商品，购买后按规则赠送金币。</p></div>
+  <section class="product-grid cash-preview-grid">
+    {% for product in products %}
+    <article class="product-card cash-preview-card">
+      <img src="{{ url_for('static', filename='assets/' ~ product.image) }}" alt="{{ product.name }}">
+      <div class="cash-card-kicker">{{ product.tag }}</div>
+      <p>{{ product.name }}</p>
+      <div class="buy-row"><strong>¥ {{ product.price }}</strong><span>赠 {{ product.reward_coin }} 金币</span><a href="{{ url_for('shop') }}">现金购买</a></div>
     </article>
     {% endfor %}
   </section>
